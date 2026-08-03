@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<meta name="theme-color" content="#1b6e4d">
+<title>HTI Islamic Academy</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icons/icon-192.png">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
+<link rel="stylesheet" href="css/style.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<div id="offline-banner" class="offline-banner" style="display:none;">অফলাইন — ইন্টারনেট এলে নিজে থেকেই সিঙ্ক হয়ে যাবে</div>
+
+<!-- ================= LOGIN / SIGNUP VIEW ================= -->
+<div id="view-login" class="container" style="display:none;">
+  <div style="text-align:center; margin: 40px 0 24px;">
+    <h1 style="color:#1b6e4d; margin-bottom:4px;">HTI Islamic Academy</h1>
+    <p style="color:#6b6b6b; margin:0;">Attendance &amp; Fee Management</p>
+  </div>
+
+  <div class="card">
+    <div id="login-form">
+      <label for="login-email">ইমেইল</label>
+      <input type="email" id="login-email" placeholder="you@example.com">
+      <label for="login-password">পাসওয়ার্ড</label>
+      <input type="password" id="login-password" placeholder="পাসওয়ার্ড">
+      <button class="btn-primary" id="btn-login">লগইন করো</button>
+      <p style="text-align:center; margin: 10px 0;">
+        <a href="#" id="link-forgot" style="color:#1b6e4d; font-size:14px;">পাসওয়ার্ড ভুলে গেছো?</a>
+      </p>
+      <p style="text-align:center; font-size:14px; color:#6b6b6b;">
+        নতুন? <a href="#" id="link-signup" style="color:#1b6e4d;">সাইন-আপ করো</a>
+      </p>
+    </div>
+
+    <div id="signup-form" style="display:none;">
+      <label for="signup-name">নাম</label>
+      <input type="text" id="signup-name" placeholder="তোমার পুরো নাম">
+      <label for="signup-email">ইমেইল</label>
+      <input type="email" id="signup-email" placeholder="you@example.com">
+      <label for="signup-password">পাসওয়ার্ড</label>
+      <input type="password" id="signup-password" placeholder="কমপক্ষে ৬ অক্ষর">
+      <button class="btn-primary" id="btn-signup">অ্যাকাউন্ট তৈরি করো</button>
+      <p style="text-align:center; font-size:14px; color:#6b6b6b; margin-top:10px;">
+        আগে থেকে অ্যাকাউন্ট আছে? <a href="#" id="link-login" style="color:#1b6e4d;">লগইন করো</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ================= PENDING APPROVAL VIEW ================= -->
+<div id="view-pending" class="container" style="display:none;">
+  <div class="card" style="text-align:center; margin-top:60px;">
+    <p style="font-size:40px; margin:0;">⏳</p>
+    <h2>Your account is pending approval.</h2>
+    <p style="color:#6b6b6b;">Please wait for the admin to assign your role.</p>
+    <button class="btn-secondary" id="btn-pending-logout">লগ আউট</button>
+  </div>
+</div>
+
+<!-- ================= MAIN APP SHELL ================= -->
+<div id="view-app" style="display:none;">
+  <div class="app-header">
+    <button class="back-btn" id="btn-back" style="visibility:hidden;">←</button>
+    <h1 id="header-title">HTI Academy</h1>
+    <button class="back-btn" id="btn-logout" title="লগ আউট">⏻</button>
+  </div>
+
+  <div class="container" id="main-content">
+    <!-- এখানে JS দিয়ে ডাইনামিক content বসবে -->
+  </div>
+
+  <div class="bottom-nav">
+    <button class="nav-item" data-view="dashboard"><span class="icon">🏠</span>হোম</button>
+    <button class="nav-item" data-view="attendance"><span class="icon">✅</span>উপস্থিতি</button>
+    <button class="nav-item" data-view="fees"><span class="icon">💰</span>বেতন</button>
+    <button class="nav-item" data-view="students"><span class="icon">👥</span>ছাত্র</button>
+    <button class="nav-item" data-view="more"><span class="icon">⋯</span>আরও</button>
+  </div>
+</div>
+
+<div id="global-loading" style="display:none; position:fixed; inset:0; background:rgba(255,255,255,0.8); z-index:2000; align-items:center; justify-content:center;">
+  <div class="spinner"></div>
+</div>
+
+<!-- Firebase SDK -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- xlsx export-এর জন্য (স্পেক ৯) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<!-- App JS modules -->
+<script src="js/firebase-config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/activity-log.js"></script>
+<script src="js/batches.js"></script>
+<script src="js/students.js"></script>
+<script src="js/attendance.js"></script>
+<script src="js/fees.js"></script>
+<script src="js/requests.js"></script>
+<script src="js/reports.js"></script>
+<script src="js/views.js"></script>
+<script src="js/main.js"></script>
+
+</body>
+</html>
