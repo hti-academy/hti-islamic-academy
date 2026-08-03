@@ -1,9 +1,7 @@
 // ==========================================
-// main.js
-// অ্যাপ্লিকেশনের মূল এন্ট্রি পয়েন্ট এবং গ্লোবাল স্টেট ম্যানেজমেন্ট
+// main.js - Standalone & Safe Initialization
 // ==========================================
 
-// Global App State
 window.AppState = {
   currentUser: null,
   userProfile: null,
@@ -11,52 +9,68 @@ window.AppState = {
   currentView: 'login-view'
 };
 
-// অ্যাপ চালুর মূল ইভেন্ট
-document.addEventListener('DOMContentLoaded', () => {
-  console.log("HTI App Initializing...");
-  setupEventListeners();
-});
+// স্পিনার ফোর্সফুলি বন্ধ করার সেফটি ফাংশন
+function forceHideSpinner() {
+  const spinner = document.getElementById('global-loading');
+  if (spinner) {
+    spinner.style.display = 'none';
+  }
+}
 
-// ইনিশিয়াল অথেন্টিকেশন চেক ও অ্যাপ স্টার্ট
-firebase.auth().onAuthStateChanged(async (user) => {
-  if (user) {
-    showLoading();
-    try {
-      window.AppState.currentUser = user;
-      
-      // ইউজার প্রোফাইল ডাটা লোড
-      const profileDoc = await db.collection('users').doc(user.uid).get();
-      if (profileDoc.exists) {
-        window.AppState.userProfile = profileDoc.data();
-        window.AppState.activeRole = window.AppState.userProfile.role || 'student';
-        
-        // নেভিগেশন ও রোল নির্দিষ্ট ভিউ সেটআপ
-        setupRoleNavigation(window.AppState.activeRole);
-        showView(getDashboardForRole(window.AppState.activeRole));
+// ভিউ দেখানোর সেফটি ফাংশন
+function forceShowLoginView() {
+  const loginView = document.getElementById('login-view');
+  if (loginView) {
+    loginView.classList.remove('d-none');
+    loginView.style.display = 'block';
+  }
+}
+
+// ফায়ারবেস অথেন্টিকেশন লিসেনার
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof firebase !== 'undefined' && firebase.auth) {
+    firebase.auth().onAuthStateChanged(async (user) => {
+      if (user) {
+        try {
+          window.AppState.currentUser = user;
+          const profileDoc = await db.collection('users').doc(user.uid).get();
+          if (profileDoc.exists) {
+            window.AppState.userProfile = profileDoc.data();
+            window.AppState.activeRole = window.AppState.userProfile.role || 'student';
+            
+            if (typeof setupRoleNavigation === 'function') {
+              setupRoleNavigation(window.AppState.activeRole);
+            }
+            if (typeof showView === 'function' && typeof getDashboardForRole === 'function') {
+              showView(getDashboardForRole(window.AppState.activeRole));
+            }
+          } else {
+            forceShowLoginView();
+          }
+        } catch (error) {
+          console.error("Profile load error:", error);
+          forceShowLoginView();
+        } finally {
+          forceHideSpinner();
+        }
       } else {
-        console.error("User profile not found in Firestore!");
-        hideLoading();
-        showView('login-view');
+        // ইউজার না থাকলে সরাসরি স্পিনার বন্ধ ও লগইন স্ক্রিন শো
+        window.AppState.currentUser = null;
+        window.AppState.userProfile = null;
+        window.AppState.activeRole = null;
+        
+        forceHideSpinner();
+        forceShowLoginView();
       }
-    } catch (error) {
-      console.error("Error loading user state:", error);
-      showToast("ডাটা লোড করতে সমস্যা হয়েছে!", "danger");
-      hideLoading();
-      showView('login-view');
-    } finally {
-      hideLoading();
-    }
+    });
   } else {
-    // লগইন করা না থাকলে স্পিনার লুকিয়ে লগইন স্ক্রিন দেখাবে
-    window.AppState.currentUser = null;
-    window.AppState.userProfile = null;
-    window.AppState.activeRole = null;
-    hideLoading();
-    showView('login-view');
+    // ফায়ারবেস লোড না হলে সরাসরি স্পিনার বন্ধ
+    forceHideSpinner();
+    forceShowLoginView();
   }
 });
 
-// রোল অনুযায়ী ড্যাশবোর্ড ঠিক করা
+// রোল অনুযায়ী ড্যাশবোর্ড
 function getDashboardForRole(role) {
   switch (role) {
     case 'super_admin':
@@ -69,28 +83,5 @@ function getDashboardForRole(role) {
       return 'student-dashboard-view';
     default:
       return 'login-view';
-  }
-}
-
-// গ্লোবাল ইভেন্ট লিসেনার
-function setupEventListeners() {
-  // লগআউট বাটন হ্যান্ডলার
-  const logoutBtn = document.getElementById('btn-logout');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      showLoading();
-      firebase.auth().signOut()
-        .then(() => {
-          showToast("সফলভাবে লগআউট হয়েছে", "success");
-        })
-        .catch((error) => {
-          console.error("Logout error:", error);
-          showToast("লগআউট করতে সমস্যা হয়েছে", "danger");
-        })
-        .finally(() => {
-          hideLoading();
-        });
-    });
   }
 }
