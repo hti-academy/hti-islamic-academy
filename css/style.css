@@ -1,0 +1,181 @@
+/* ============================================================
+   style.css
+   মোবাইল-ফার্স্ট, সাধারণ ও পরিষ্কার ডিজাইন — এটা একটা কাজের টুল,
+   সাজসজ্জার দরকার নেই, দ্রুত পড়া আর ট্যাপ করা সহজ হওয়াই মূল লক্ষ্য।
+   ============================================================ */
+
+:root {
+  --primary: #1b6e4d;      /* সবুজ - Islamic academy-র জন্য উপযুক্ত */
+  --primary-dark: #12503a;
+  --danger: #c0392b;
+  --warning: #d68910;
+  --bg: #f7f7f5;
+  --card-bg: #ffffff;
+  --text: #1a1a1a;
+  --text-muted: #6b6b6b;
+  --border: #e0e0e0;
+  --radius: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Noto Sans Bengali', -apple-system, BlinkMacSystemFont, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  font-size: 16px;
+  line-height: 1.5;
+  padding-bottom: 70px; /* bottom nav-এর জন্য জায়গা */
+}
+
+.container { padding: 16px; max-width: 600px; margin: 0 auto; }
+
+/* --- হেডার --- */
+.app-header {
+  background: var(--primary);
+  color: white;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.app-header h1 { font-size: 18px; margin: 0; font-weight: 600; }
+.back-btn {
+  background: none; border: none; color: white; font-size: 22px;
+  cursor: pointer; padding: 4px 8px;
+}
+
+/* --- কার্ড --- */
+.card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  padding: 16px;
+  margin-bottom: 12px;
+  border: 1px solid var(--border);
+}
+
+/* --- ফর্ম --- */
+label { display: block; margin-bottom: 6px; font-weight: 500; font-size: 14px; }
+input, select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 16px;
+  margin-bottom: 14px;
+  background: white;
+  color: var(--text);
+}
+input:focus, select:focus, textarea:focus {
+  outline: 2px solid var(--primary);
+  outline-offset: -1px;
+}
+
+button {
+  font-size: 16px;
+  padding: 12px 20px;
+  border-radius: var(--radius);
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+.btn-primary { background: var(--primary); color: white; width: 100%; }
+.btn-primary:disabled { background: #9bbfae; cursor: not-allowed; }
+.btn-secondary { background: white; color: var(--primary); border: 1px solid var(--primary); width: 100%; }
+.btn-danger { background: var(--danger); color: white; }
+.btn-small { padding: 8px 14px; font-size: 14px; width: auto; }
+
+/* --- বটম নেভিগেশন --- */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 0; right: 0;
+  background: white; border-top: 1px solid var(--border);
+  display: flex; justify-content: space-around;
+  padding: 8px 0; z-index: 100;
+}
+.nav-item {
+  display: flex; flex-direction: column; align-items: center;
+  color: var(--text-muted); text-decoration: none; font-size: 12px;
+  background: none; border: none; cursor: pointer; gap: 2px;
+}
+.nav-item.active { color: var(--primary); font-weight: 600; }
+.nav-item .icon { font-size: 20px; }
+
+/* --- Attendance স্ট্যাটাস বাটন --- */
+.status-group { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 10px; }
+.status-btn {
+  padding: 8px 12px; border-radius: 20px; border: 1px solid var(--border);
+  background: white; font-size: 13px; cursor: pointer;
+}
+.status-btn.selected.present { background: #1b6e4d; color: white; border-color: #1b6e4d; }
+.status-btn.selected.absent { background: #c0392b; color: white; border-color: #c0392b; }
+.status-btn.selected.late { background: #d68910; color: white; border-color: #d68910; }
+.status-btn.selected.mid_leave { background: #8e44ad; color: white; border-color: #8e44ad; }
+.status-btn.selected.late_mid_leave { background: #34495e; color: white; border-color: #34495e; }
+
+.student-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.student-row:last-child { border-bottom: none; }
+.student-name { font-weight: 500; }
+.student-meta { font-size: 13px; color: var(--text-muted); }
+
+/* --- ব্যাজ --- */
+.badge {
+  display: inline-block; padding: 2px 8px; border-radius: 10px;
+  font-size: 12px; font-weight: 600;
+}
+.badge-free { background: #e8f5e9; color: #2e7d32; }
+.badge-paid { background: #e3f2fd; color: #1565c0; }
+.badge-pending { background: #fff3e0; color: #e65100; }
+
+/* --- Pending request badge (dashboard-এ, স্পেক ১৫.৪) --- */
+.pending-dot {
+  display: inline-block; width: 10px; height: 10px; border-radius: 50%;
+  background: #e53935; margin-left: 6px;
+}
+
+/* --- Sync status --- */
+.sync-status { font-size: 12px; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+.sync-status.offline { color: var(--warning); }
+.offline-banner {
+  background: #fff3cd; color: #856404; padding: 8px 16px;
+  text-align: center; font-size: 13px; position: sticky; top: 56px; z-index: 99;
+}
+
+/* --- Toast --- */
+.toast {
+  position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%) translateY(20px);
+  background: #333; color: white; padding: 12px 20px; border-radius: var(--radius);
+  font-size: 14px; opacity: 0; transition: all 0.3s; z-index: 1000; max-width: 90%;
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+.toast-error { background: var(--danger); }
+.toast-success { background: var(--primary); }
+
+/* --- Loading --- */
+.spinner {
+  border: 3px solid #f0f0f0; border-top: 3px solid var(--primary);
+  border-radius: 50%; width: 24px; height: 24px;
+  animation: spin 0.8s linear infinite; margin: 20px auto;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* --- Empty state --- */
+.empty-state { text-align: center; padding: 40px 20px; color: var(--text-muted); }
+
+/* --- ডেস্কটপ-only নোটিশ (রিপোর্ট এক্সপোর্ট, স্পেক ১৫.৫) --- */
+.desktop-only-notice {
+  background: #fff3cd; border: 1px solid #ffe69c; color: #856404;
+  padding: 12px; border-radius: var(--radius); font-size: 14px; text-align: center;
+}
+
+/* ছোট স্ক্রিনে সব ঠিকভাবে বসার জন্য */
+@media (max-width: 360px) {
+  .container { padding: 12px; }
+}
